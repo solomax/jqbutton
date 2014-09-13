@@ -20,30 +20,39 @@ import org.apache.wicket.request.mapper.parameter.PageParameters;
 
 import com.googlecode.wicket.jquery.ui.form.button.Button;
 
-public class HomePage extends WebPage {
+public class HomePage extends WebPage
+{
 	private static final long serialVersionUID = 1L;
 	private static final Logger log = Logger.getLogger(HomePage.class);
+
 	private final Button btn = new Button("button");
 	private final AbstractDefaultAjaxBehavior aab = new AbstractDefaultAjaxBehavior() {
 		private static final long serialVersionUID = 1L;
 
 		@Override
-		protected void respond(AjaxRequestTarget target) {
+		protected void respond(AjaxRequestTarget target)
+		{
 			IWebSocketConnectionRegistry reg = IWebSocketSettings.Holder.get(getApplication()).getConnectionRegistry();
-			new WebSocketPushBroadcaster(reg).broadcastAll(getApplication(), new IWebSocketPushMessage() {});
+			new WebSocketPushBroadcaster(reg).broadcastAll(getApplication(), new IWebSocketPushMessage() {
+			});
 		}
 	};
 
 	@Override
-	public void onEvent(IEvent<?> event) {
-		if (event.getPayload() instanceof WebSocketPushPayload) {
+	public void onEvent(IEvent<?> event)
+	{
+		super.onEvent(event);
+
+		if (event.getPayload() instanceof WebSocketPushPayload)
+		{
 			WebSocketPushPayload wsEvent = (WebSocketPushPayload) event.getPayload();
 			wsEvent.getHandler().add(btn.setVisible(true));
+			wsEvent.getHandler().appendJavaScript("console.log('javascript executed');");
 		}
-		super.onEvent(event);
 	}
-	
-	public HomePage(final PageParameters parameters) {
+
+	public HomePage(final PageParameters parameters)
+	{
 		super(parameters);
 
 		add(new Label("version", getApplication().getFrameworkSettings().getVersion()));
@@ -52,23 +61,27 @@ public class HomePage extends WebPage {
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			protected void onConnect(ConnectedMessage message) {
+			protected void onConnect(ConnectedMessage message)
+			{
 				super.onConnect(message);
-				log.debug(String.format("WebSocketBehavior::onConnect [session: %s, key: %s]", message.getSessionId(), message.getKey()));
+				log.info(String.format("WebSocketBehavior::onConnect [session: %s, key: %s]", message.getSessionId(), message.getKey()));
 			}
-			
+
 			@Override
-			protected void onClose(ClosedMessage message) {
+			protected void onClose(ClosedMessage message)
+			{
 				super.onClose(message);
-				log.debug(String.format("WebSocketBehavior::onClose [session: %s, key: %s]", message.getSessionId(), message.getKey()));
+				log.info(String.format("WebSocketBehavior::onClose [session: %s, key: %s]", message.getSessionId(), message.getKey()));
 			}
 		});
+
 		add(btn.setOutputMarkupPlaceholderTag(true).setVisible(false));
-    }
+	}
 
 	@Override
-	public void renderHead(IHeaderResponse response) {
+	public void renderHead(IHeaderResponse response)
+	{
 		super.renderHead(response);
-		response.render(OnDomReadyHeaderItem.forScript(aab.getCallbackScript()));
+		response.render(OnDomReadyHeaderItem.forScript("window.setTimeout(function() {" + aab.getCallbackScript() + "} , 500);"));
 	}
 }
