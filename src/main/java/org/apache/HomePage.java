@@ -56,6 +56,7 @@ public class HomePage extends WebPage
 		super(parameters);
 
 		add(new Label("version", getApplication().getFrameworkSettings().getVersion()));
+		add(new Button("button0"));
 
 		add(aab, new WebSocketBehavior() {
 			private static final long serialVersionUID = 1L;
