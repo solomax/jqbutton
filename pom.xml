@@ -41,7 +41,8 @@
 		</license>
 	</licenses>
 	<properties>
-		<wicket.version>6.17.0</wicket.version>
+		<wicket.version>6.18.0-SNAPSHOT</wicket.version>
+		<wicketj.version>6.17.0</wicketj.version>
 		<jetty.version>8.1.15.v20140411</jetty.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<!-- allowed values: R7, 1.0, 1.5, 2.0 or none -->
@@ -69,12 +70,17 @@
 		<dependency>
 			<groupId>com.googlecode.wicket-jquery-ui</groupId>
 			<artifactId>wicket-jquery-ui</artifactId>
-			<version>${wicket.version}</version>
+			<version>${wicketj.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.googlecode.wicket-jquery-ui</groupId>
+			<artifactId>wicket-jquery-ui-calendar</artifactId>
+			<version>${wicketj.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.googlecode.wicket-jquery-ui</groupId>
 			<artifactId>wicket-jquery-ui-theme-uilightness</artifactId>
-			<version>${wicket.version}</version>
+			<version>${wicketj.version}</version>
 		</dependency>
 
 		<!-- LOGGING DEPENDENCIES - LOG4J -->
